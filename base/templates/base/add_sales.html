@@ -1,0 +1,9 @@
+{% extends 'main.html' %}
+
+{% block title %}My Restaurant Sales - My App{% endblock %}
+{% block content %} 
+<!-- it handle the same page that add rate handling, we can do that because we create a stanard page (DRY) -->
+<!-- the data we passed by view, to customize the page for another job -->
+{% include 'base/partials/_add_sales.html' %}
+
+{% endblock %}

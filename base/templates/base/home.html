@@ -1,0 +1,81 @@
+{% extends 'main.html' %}
+
+{% block title %}Home - My App{% endblock %}
+{% block content %}
+<h2>there are a public view for all restaurants</h2>
+<p class="d-inline-flex gap-1">
+<a class="btn btn-primary" data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Restaurant Model</a>
+<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Rating Model</button>
+<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Toggle both elements</button>
+</p>
+<div class="row">
+    <div class="col">
+        <div class="collapse multi-collapse" id="multiCollapseExample1">
+            <div class="card card-body">
+                <!-- Restuarant Table -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">name</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Website</th>
+                        <th scope="col">Opened at</th>
+                        <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- loop here -->
+                        {% for rest in restaurants %}
+                        <tr>
+                        <th scope="row">{{rest.id}}</th>
+                        <td>{{rest.name}}</td>
+                        <td>{{rest.restaurant_type}}</td>
+                        <td>{{rest.website}}</td>
+                        <td>{{rest.opened_at}}</td>
+                        <!-- for actions -->
+                        <td>
+                            <!-- <a href="#" class="btn btn-sm btn-outline-primary">View</a> -->
+                            <a href="{% url 'edit_restaurant' rest.id %}" class="btn btn-sm btn-outline-warning">Edit</a>
+                            <a href="{% url 'delete_restaurant' rest.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </td>
+                        </tr>
+                        {% endfor %}
+                        <!--  -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="collapse multi-collapse" id="multiCollapseExample2">
+            <div class="card card-body">
+                <!-- Rating Table -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Restaurant</th>
+                        <th scope="col">User</th>
+                        <th scope="col">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- loop here -->
+                        {% for rate in ratings %}
+                        <tr>
+                        <th scope="row">{{rate.id}}</th>
+                        <td>{{rate.restaurant.name}}</td>
+                        <td>{{rate.user.username}}</td>
+                        <td>{{rate.score}}</td>
+                        </tr>
+                        {% endfor %}
+                        <!--  -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

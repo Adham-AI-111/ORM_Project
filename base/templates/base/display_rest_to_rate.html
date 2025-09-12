@@ -1,0 +1,37 @@
+{% extends 'main.html' %}
+
+{% block title %}Rate Restaurant - My App{% endblock %}
+{% block content %}
+
+<h3>This is where you can rate any restaurant you desire</h3>
+
+<div class="d-flex flex-column gap-3">
+    {% for rest in rests %}
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ rest.name }}</strong>
+                    <span class="badge bg-secondary ms-2">{{ rest.get_restaurant_type_display }}</span>
+                </div>
+                <button class="btn btn-sm btn-outline-primary" type="button" 
+                data-bs-toggle="collapse" 
+                data-bs-target="#rate-{{ rest.id }}" 
+                aria-expanded="false" 
+                aria-controls="rate-{{ rest.id }}">
+                    Toggle rate
+                </button>
+            </div>
+
+            <div class="collapse mt-3" id="rate-{{ rest.id }}">
+                {% url 'rate_single_restuarant' rest.id as rate_url %}
+                {% include 'base/partials/_rate_form.html' with restaurant=rest form=form form_action=rate_url %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="alert alert-info">No restaurants to rate.</div>
+    {% endfor %}
+</div>
+
+{% endblock %}

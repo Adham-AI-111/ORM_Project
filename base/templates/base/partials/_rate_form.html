@@ -1,0 +1,21 @@
+<form method="post" action="{{ form_action|default:'' }}">
+    {% csrf_token %}
+    <fieldset>
+        <legend class="h6 mb-3">Rate The "{{ restaurant.name }}" Restaurant</legend>
+
+        <div class="mb-3">
+            <label class="form-label">Score</label>
+            {{ form.score }}
+            {% if form.score.help_text %}
+            <div class="form-text">{{ form.score.help_text }}</div>
+            {% endif %}
+            {% for error in form.score.errors %}
+            <div class="alert alert-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+    </fieldset>
+</form> 
+
+
