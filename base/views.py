@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Restaurant, Rating, Sale
 from .forms import RestaurantCreationForm, RatingForm, SaleForm
 from django.contrib import messages
-from django.db.models import Sum
+from django.db.models import Sum, Q
 
 def home(request):
     '''
@@ -21,7 +21,7 @@ def home(request):
     5. using the resturants query to filter the ratings queryset accordingly, without filtering the ratings again
     '''
     restaurants = Restaurant.objects.prefetch_related('sales', 'ratings').all()
-    # it useful for more complex queries and the filter logic below
+    # it useful for more complex queries and the filter logic below, beacause we will filter the restaurants queryset
     ratings = restaurants.values('ratings__id', 'ratings__score', 'ratings__restaurant__name', 'ratings__user__username')
 
     #! Get distinct restaurant types for filtering to show in the dropdown
@@ -93,7 +93,12 @@ def home(request):
         if filter_sales == ">6000":
             filters['sales__amount__gte'] = 6000
     # !-------------------------------------------------------------
-    restaurants = restaurants.filter(**filters).distinct()
+    # ! --------------------search logic----------------------------
+    q = request.GET.get('q')
+    q_value = Q()
+    if q:
+        q_value = Q(name__icontains=q) | Q(restaurant_type__icontains=q) | Q(user__username__icontains=q)
+    restaurants = restaurants.filter(q_value, **filters).distinct()
     ratings = restaurants.values('ratings__id', 'ratings__score', 'ratings__restaurant__name', 'ratings__user__username')
     
     context = {'restaurants': restaurants, 'ratings': ratings, 'unique_restaurant_types': unique_restaurant_types}

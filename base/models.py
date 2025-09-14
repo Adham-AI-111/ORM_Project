@@ -22,15 +22,13 @@ class Restaurant(models.Model):
         return self.name
     
     def avg_rates(self):
-        # calculating average rating from related ratings
         # self is the current restaurant instance
         ratings = self.ratings.all()
         # if no ratings, return 0.0 to avoid division by zero, and avoid the error
         # exists() is a model method that checks if the queryset contains any records
         if not ratings.exists():
             return 0.0
-        total_score = sum(rating.score for rating in ratings)
-        return total_score / ratings.count()
+        return sum(r.score for r in ratings) / ratings.count()
 
     def total_sales_amount(self):
         # using aggregate to sum up the amounts of all related sales
