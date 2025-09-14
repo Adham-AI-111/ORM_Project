@@ -17,9 +17,21 @@ class Restaurant(models.Model):
     longitude = models.FloatField(default=0.0, validators=[MinValueValidator(-180.0), MaxValueValidator(180.0)])
     restaurant_type = models.CharField(max_length=2, choices=RestaurantType.choices)
     opened_at = models.DateField()
+    
     def __str__(self):
         return self.name
     
+    def avg_rates(self):
+        # calculating average rating from related ratings
+        # self is the current restaurant instance
+        ratings = self.ratings.all()
+        # if no ratings, return 0.0 to avoid division by zero, and avoid the error
+        # exists() is a model method that checks if the queryset contains any records
+        if not ratings.exists():
+            return 0.0
+        total_score = sum(rating.score for rating in ratings)
+        return total_score / ratings.count()
+
     def total_sales_amount(self):
         # using aggregate to sum up the amounts of all related sales
         return self.sales.aggregate(total=models.Sum('amount'))['total'] or 0.0
@@ -38,3 +50,7 @@ class Sale(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='sales')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateTimeField()
+
+    @property
+    def total_amount(self):
+        return self.objects.aggregate(total=models.Sum('amount'))['total'] or 0.0

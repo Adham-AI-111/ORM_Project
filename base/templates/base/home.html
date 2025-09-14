@@ -2,77 +2,158 @@
 
 {% block title %}Home - My App{% endblock %}
 {% block content %}
-<h2>there are a public view for all restaurants</h2>
-<p class="d-inline-flex gap-1">
-<a class="btn btn-primary" data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Restaurant Model</a>
-<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Rating Model</button>
-<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Toggle both elements</button>
-</p>
+<!-- Header Section with Sidebar -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+    <div>
+        <h2 class="mb-1">Restaurant Dashboard</h2>
+        <p class="text-muted mb-0">Public view of all restaurants and ratings</p>
+    </div>
+    <div class="flex-shrink-0">{% include 'sidebar.html' %}</div>
+</div>
+    <!-- Modern Toggle Buttons -->
+<div class="d-flex flex-column flex-sm-row flex-wrap gap-2 mb-4">
+    <button class="btn btn-outline-primary d-flex align-items-center gap-2" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample1" aria-expanded="false" aria-controls="multiCollapseExample1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shop" viewBox="0 0 16 16">
+        <path d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.371 2.371 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976l2.61-3.045zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0zM1.5 8.5A.5.5 0 0 1 2 9v6h1v-5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v5h6V9a.5.5 0 0 1 1 0v6a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V9z"/>
+        </svg>
+        View Restaurants
+    </button>
+    <button class="btn btn-outline-success d-flex align-items-center gap-2" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+        </svg>
+        View Ratings
+    </button>
+    <button class="btn btn-outline-secondary d-flex align-items-center gap-2" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
+        </svg>
+        Show All
+    </button>
+    <p>filter result restaurants: {{restaurants.count}}  ratings: {{ratings.count}}</p>
+</div>
 <div class="row">
     <div class="col">
         <div class="collapse multi-collapse" id="multiCollapseExample1">
-            <div class="card card-body">
-                <!-- Restuarant Table -->
-                <table class="table">
-                    <thead>
-                        <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">name</th>
-                        <th scope="col">Type</th>
-                        <th scope="col">Website</th>
-                        <th scope="col">Opened at</th>
-                        <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- loop here -->
-                        {% for rest in restaurants %}
-                        <tr>
-                        <th scope="row">{{rest.id}}</th>
-                        <td>{{rest.name}}</td>
-                        <td>{{rest.restaurant_type}}</td>
-                        <td>{{rest.website}}</td>
-                        <td>{{rest.opened_at}}</td>
-                        <!-- for actions -->
-                        <td>
-                            <!-- <a href="#" class="btn btn-sm btn-outline-primary">View</a> -->
-                            <a href="{% url 'edit_restaurant' rest.id %}" class="btn btn-sm btn-outline-warning">Edit</a>
-                            <a href="{% url 'delete_restaurant' rest.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
-                        </td>
-                        </tr>
-                        {% endfor %}
-                        <!--  -->
-                    </tbody>
-                </table>
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0 d-flex align-items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-shop" viewBox="0 0 16 16">
+                            <path d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.371 2.371 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976l2.61-3.045zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0zM1.5 8.5A.5.5 0 0 1 2 9v6h1v-5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v5h6V9a.5.5 0 0 1 1 0v6a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V9z"/>
+                        </svg>
+                        Restaurants Directory
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                <th scope="col" class="border-0">#</th>
+                                <th scope="col" class="border-0">Restaurant Name</th>
+                                <th scope="col" class="border-0">Type</th>
+                                <th scope="col" class="border-0">Website</th>
+                                <th scope="col" class="border-0">Opened At</th>
+                                <th scope="col" class="border-0">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rest in restaurants %}
+                                <tr>
+                                <th scope="row" class="fw-normal">{{rest.id}}</th>
+                                <td class="fw-medium">{{rest.name}}</td>
+                                <td><span class="badge bg-secondary">{{rest.restaurant_type}}</span></td>
+                                <td>
+                                    {% if rest.website %}
+                                        <a href="{{rest.website}}" target="_blank" class="text-decoration-none">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
+                                                <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
+                                                <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a1 1 0 0 1-.896-1.63l.793-.792z"/>
+                                            </svg>
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-muted">{{rest.opened_at|date:"M d, Y"}}</td>
+                                <td>
+                                    <div class="d-flex gap-1">
+                                        <a href="{% url 'edit_restaurant' rest.id %}" class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708L9.5 10.5a.5.5 0 0 1-.5.5H6a.5.5 0 0 1-.5-.5V8a.5.5 0 0 1 .146-.354l6-6zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                            </svg>
+                                            Edit
+                                        </a>
+                                        <a href="{% url 'delete_restaurant' rest.id %}" class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                            </svg>
+                                            Delete
+                                        </a>
+                                    </div>
+                                </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="col">
         <div class="collapse multi-collapse" id="multiCollapseExample2">
-            <div class="card card-body">
-                <!-- Rating Table -->
-                <table class="table">
-                    <thead>
-                        <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Restaurant</th>
-                        <th scope="col">User</th>
-                        <th scope="col">Score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- loop here -->
-                        {% for rate in ratings %}
-                        <tr>
-                        <th scope="row">{{rate.id}}</th>
-                        <td>{{rate.restaurant.name}}</td>
-                        <td>{{rate.user.username}}</td>
-                        <td>{{rate.score}}</td>
-                        </tr>
-                        {% endfor %}
-                        <!--  -->
-                    </tbody>
-                </table>
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0 d-flex align-items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                        </svg>
+                        Restaurant Ratings
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                <th scope="col" class="border-0">#</th>
+                                <th scope="col" class="border-0">Restaurant</th>
+                                <th scope="col" class="border-0">User</th>
+                                <th scope="col" class="border-0">Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rate in ratings %}
+                                <tr>
+                                <th scope="row" class="fw-normal">{{rate.ratings__id}}</th>
+                                <td class="fw-medium">{{rate.ratings__restaurant__name}}</td>
+                                <td class="text-muted">{{rate.ratings__user__username}}</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="d-flex">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= rate.ratings__score %}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ffc107" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                    </svg>
+                                                {% else %}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#e9ecef" class="bi bi-star" viewBox="0 0 16 16">
+                                                        <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-5.03l3.666-3.495 3.666 3.495a.565.565 0 0 0-.163 5.03l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                                                    </svg>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <span class="badge bg-warning text-dark">{{rate.ratings__score}}/5</span>
+                                    </div>
+                                </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
