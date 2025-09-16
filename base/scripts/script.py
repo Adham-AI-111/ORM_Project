@@ -8,13 +8,10 @@ def run():
     # restaurant = Restaurant.objects.first()
     # print(user)
 
-    print(Rating.objects.all().count())
-
-    # ?=======================
-    # test the prefetch_related optimization
-    restaurants = Restaurant.objects.prefetch_related('sales', 'ratings').all()
-    ratings = restaurants.values('ratings__id', 'ratings__score', 'ratings__restaurant__name', 'ratings__user__username')
-    print(restaurants.filter(sales__total_amount__gt=50000).distinct().count())
+    TYPES_MAP = [('Fast Food', 'FF'), ('Italian', 'IT'), ('Egyption', 'EG'), ('Drinks', 'DR'), ('Arabian', 'AR'), ('Other', 'OT')]
+    label_to_code = dict(TYPES_MAP)
+    print(label_to_code)
+    
     # ?=======================
     # restaurant = Restaurant()
     # restaurant.name = "Pizza House"

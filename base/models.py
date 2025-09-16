@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models import Sum, Avg
 
 class Restaurant(models.Model):
     class RestaurantType(models.TextChoices):
@@ -21,14 +22,9 @@ class Restaurant(models.Model):
     def __str__(self):
         return self.name
     
+    
     def avg_rates(self):
-        # self is the current restaurant instance
-        ratings = self.ratings.all()
-        # if no ratings, return 0.0 to avoid division by zero, and avoid the error
-        # exists() is a model method that checks if the queryset contains any records
-        if not ratings.exists():
-            return 0.0
-        return sum(r.score for r in ratings) / ratings.count()
+        return self.objects.annotate(average=Avg('ratings__score'))['average'] or 0.0
 
     def total_sales_amount(self):
         # using aggregate to sum up the amounts of all related sales
@@ -42,7 +38,6 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"{self.restaurant.name} - {self.score} by {self.user.username}"
-
 
 class Sale(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='sales')

@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect
 from .models import Restaurant, Rating, Sale
 from .forms import RestaurantCreationForm, RatingForm, SaleForm
 from django.contrib import messages
-from django.db.models import Sum, Q
+from django.db.models import Sum, Q, Avg
+
+
 
 def home(request):
     '''
@@ -32,20 +34,59 @@ def home(request):
     #! ============================================
     # filter logic
     filter_rating = request.GET.get('rating_filter')
-    filter_type = request.GET.get('type_filter')
+    filter_type = request.GET.getlist('type_filter')
+    print(filter_type)
     filter_sales = request.GET.get('sales_filter') 
 
-    TYPES_MAP = [('Fast Food', 'FF'), ('Italian', 'IT'), ('Egyption', 'EG'), ('Drinks', 'DR'), ('Arabian', 'AR'), ('Other', 'OT')]
-
-    # filters_rate_model = {}
     filters = {}
-    # get the corresponding code for the selected type from the TYPES_MAP
-    # this line caued error in the restaurants display #! filters['restaurant_type'] = ""
-    for label, code in TYPES_MAP:
-            if filter_type == label:
-                filters['restaurant_type'] = code
-                break
-    # ! -------Combined filter logic betwee --rating-- filter and the --type-- filter-------
+    '''
+    Filter Logic Explanation:
+    1. Get filter parameters from URL query string (rating, type, sales)
+    2. Map user-friendly restaurant types (e.g., 'Fast Food') to database codes ('FF')
+    3. Convert selected types to their corresponding database codes using list comprehension
+    4. Build a dynamic filters dictionary for the Restaurant.objects.filter() query
+    5. Apply filters only if they are selected by the user, otherwise return all restaurants
+
+    Combined Filter Logic (Rating + Type):
+    - Handles three scenarios:
+        1. Both rating AND type filters selected:
+            - Preserves restaurant_type filter
+            - Adds rating filter based on selection:
+             * "1-3": ratings <= 3
+             * "4-5": ratings in [4,5]
+             * ">=3": ratings >= 3
+             * "1star": ratings = 1
+        
+        2. Only rating filter selected (no type):
+            - Applies rating criteria without type restriction
+        
+        3. Only type filter selected:
+            - Filters by restaurant type only
+
+    This approach allows for:
+    - Flexible combination of filters
+    - Precise control over rating ranges
+    - Maintaining filter context when both are active
+    - Independent operation when only one filter is selected
+    '''
+    TYPES_MAP = [('Fast Food', 'FF'), ('Italian', 'IT'), ('Egyption', 'EG'), ('Drinks', 'DR'), ('Arabian', 'AR'), ('Other', 'OT')]
+    label_to_code = dict(TYPES_MAP)
+    if filter_type:
+        # using list comperhension and __in instead of looping towice
+        chosen_value_type = [label_to_code[t] for t in filter_type if t in label_to_code]
+        filters['restaurant_type__in'] = chosen_value_type
+
+    #? !OLD WAY TO: filtering the restaurants based on types that are chosen
+    # chosen_value_type = []
+    # if filter_type: # 2. check if there are values in filter_type 
+    #     for label, code in TYPES_MAP: # 1. get the types in DB 
+    #     # TODO: get list of filter values for rst type
+    #         for type in filter_type:  # get the types that were found
+    #             if type == label:
+    #                 chosen_value_type.append(code)
+    #     filters['restaurant_type__in'] = chosen_value_type # we will get several version from this filter if there are more that on value
+
+    # ! new filter-------Combined filter logic betwee --rating-- filter and the --type-- filter-------
     # it works now 
     if filter_rating and filter_type:
         if filter_rating == "1-3" and filters['restaurant_type']:
@@ -60,9 +101,18 @@ def home(request):
         if filter_rating == "1star" and filters['restaurant_type']:
             filters['ratings__score'] = 1
             filters['restaurant_type']=filters['restaurant_type']
-    # !===================================================================================
+    elif filter_rating and not filter_type:
+        if filter_rating == "1-3" :
+            filters['ratings__score__lte'] = 3
+        if filter_rating == "4-5":
+            filters['ratings__score__in'] = (5, 4)
+        if filter_rating == ">=3":
+            filters['ratings__score__gte'] = 3
+        if filter_rating == "1star":
+            filters['ratings__score'] = 1
+    # !-------------------------------------------------------------
 
-    # ! --------Single filter logic for each filter--------------   
+    # ! old filter --------Single filter logic for each filter--------------   
     # if filter_rating and not filter_type and not filter_sales:
     #     # put if condition here to check the value of filter_rating and apply the corresponding filter
     #     if filter_rating == "1-3":
@@ -142,9 +192,17 @@ def delete_restaurant(request, restaurant_id):
 
 def display_restaurants_to_rate(request):
     rests = Restaurant.objects.all()
+
     # this -->form<-- is just to show the rating form on the same page, without go to another page
     # works by javascript its engine is in the html file and its function is in the rate_restaurant view
     form = RatingForm()
+
+    q = request.GET.get('q')
+    q_values = Q()
+    if q:
+        q_values = Q(name__icontains=q) 
+
+    rests = rests.filter(q_values)
     context = {'rests': rests, 'form': form}
     return render(request, 'base/display_rest_to_rate.html', context)
 
@@ -180,7 +238,12 @@ def restaurant_sale(request):
     # this form works like the rate_restaurant view form
     # to show the sale form on the same page, without go to another page
     form = SaleForm()
-
+    q = request.GET.get('q')
+    q_values = Q()
+    if q:
+        q_values = Q(name__icontains=q) 
+        
+    restaurants = restaurants.filter(q_values)
     context = {"restaurants": restaurants, "form": form}
     return render(request, 'base/rest_sales.html', context)
 
