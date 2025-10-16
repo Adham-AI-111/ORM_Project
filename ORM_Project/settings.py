@@ -27,8 +27,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'base',
+    'api',
+    'rest_framework',
     'django_extensions',
     "debug_toolbar",
+    'silk',
 
 ]
 
@@ -41,6 +44,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    'silk.middleware.SilkyMiddleware',
 
 ]
 

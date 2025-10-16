@@ -2,7 +2,8 @@
     {% if restaurant.sales.all %}
         <div class="d-flex align-items-center gap-2 mb-2">
             <span class="badge bg-success">Total Sales: {{ restaurant.sales.count }}</span>
-            <span class="badge bg-primary">Total Amount: ${{ restaurant.total_sales_amount|default:"0.00" }}</span>
+            <span class="badge bg-primary">Total income: ${{ restaurant.sales.total_income_for_rest|default:"0.00" }}</span>
+            <span class="badge bg-primary">Total profit: ${{ restaurant.sales.profit|default:"0.00" }}</span>
         </div>
         
         <div class="table-responsive">
@@ -17,7 +18,7 @@
                     {% for sale in restaurant.sales.all|slice:":10" %}
                     <tr>
                         <td>{{ sale.date|date:"M d, Y H:i" }}</td>
-                        <td>${{ sale.amount }}</td>
+                        <td>${{ sale.income }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

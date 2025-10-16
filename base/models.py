@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db.models import Sum, Avg
+from django.db.models import Avg, F, Sum
 
 class Restaurant(models.Model):
     class RestaurantType(models.TextChoices):
@@ -22,13 +22,19 @@ class Restaurant(models.Model):
     def __str__(self):
         return self.name
     
-    
+    @property
     def avg_rates(self):
-        return self.objects.annotate(average=Avg('ratings__score'))['average'] or 0.0
+        return self.ratings.aggregate(average=Avg('score'))['average'] or 0.0
 
-    def total_sales_amount(self):
+    @property
+    def total_sales_income(self):
         # using aggregate to sum up the amounts of all related sales
-        return self.sales.aggregate(total=models.Sum('amount'))['total'] or 0.0
+        return self.sales.aggregate(total=Sum('income'))['total'] or 0.0
+
+    @property
+    def total_sales_profit(self):
+        # using aggregate to sum up the amounts of all related sales
+        return self.sales.aggregate(total=Sum('profit'))['total'] or 0.0
 
 
 class Rating(models.Model):
@@ -39,11 +45,23 @@ class Rating(models.Model):
     def __str__(self):
         return f"{self.restaurant.name} - {self.score} by {self.user.username}"
 
+
 class Sale(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='sales')
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    income = models.DecimalField(max_digits=10, decimal_places=2)
+    expenditure = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     date = models.DateTimeField()
 
+    @classmethod
+    def total_income_for_rest(self):
+        return Sale.objects.aggregate(total=Sum('income'))['total'] or 0.0
+    
+    @classmethod
+    def total_profit_for_rest(self, restaurant_id):
+        return self.objects.filter(restaurant__id=restaurant_id).aggregate(total=Sum('profit'))['total'] or 0.0
+    
     @property
-    def total_amount(self):
-        return self.objects.aggregate(total=models.Sum('amount'))['total'] or 0.0
+    def profit(self):
+        # if the profit got by annotate will not appear on the serializer as a col, should be with this direct way
+        return self.income - self.expenditure
+ 

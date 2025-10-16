@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect
 from .models import Restaurant, Rating, Sale
 from .forms import RestaurantCreationForm, RatingForm, SaleForm
 from django.contrib import messages
-from django.db.models import Sum, Q, Avg
+# from django.db.models import Sum,  Avg
+from django.db.models import Case, When, Value, CharField, Q
+
 
 
 
@@ -133,15 +135,15 @@ def home(request):
     if filter_sales:
         # implement sales filter logic here based on the selected range
         if filter_sales == "<2000":
-            filters['sales__amount__lt'] = 2000
+            filters['sales__income__lt'] = 2000
         if filter_sales == "2000to4000":
-            filters['sales__amount__gte'] = 2000
-            filters['sales__amount__lte'] = 4000
+            filters['sales__income__gte'] = 2000
+            filters['sales__income__lte'] = 4000
         if filter_sales == "4000to6000":
-            filters['sales__amount__gte'] = 4000
-            filters['sales__amount__lte'] = 6000
+            filters['sales__income__gte'] = 4000
+            filters['sales__income__lte'] = 6000
         if filter_sales == ">6000":
-            filters['sales__amount__gte'] = 6000
+            filters['sales__income__gte'] = 6000
     # !-------------------------------------------------------------
     # ! --------------------search logic----------------------------
     q = request.GET.get('q')
@@ -191,7 +193,20 @@ def delete_restaurant(request, restaurant_id):
     return render(request, 'base/delete.html', context)
 
 def display_restaurants_to_rate(request):
-    rests = Restaurant.objects.all()
+    # i replaced this query to increase the performance while i did not want all the db atb
+    # rests = Restaurant.objects.all()
+    
+    # using Case,When,then to catch the full type name, because values() cannot get the full name while we use the choice class
+    rests = Restaurant.objects.annotate(
+    rest_type_display=Case(
+        When(restaurant_type='FF', then=Value('Fast Food')),
+        When(restaurant_type='IT', then=Value('Italian')),
+        When(restaurant_type='EG', then=Value('Egyption')),
+        When(restaurant_type='DR', then=Value('Drinks')),
+        When(restaurant_type='AR', then=Value('Arabian')),
+        When(restaurant_type='OT', then=Value('Other')),
+        output_field=CharField()
+    )).values('name', 'rest_type_display', 'restaurant_type')
 
     # this -->form<-- is just to show the rating form on the same page, without go to another page
     # works by javascript its engine is in the html file and its function is in the rate_restaurant view
@@ -200,7 +215,7 @@ def display_restaurants_to_rate(request):
     q = request.GET.get('q')
     q_values = Q()
     if q:
-        q_values = Q(name__icontains=q) 
+        q_values = Q(name__icontains=q) | Q(date__icontains=q)
 
     rests = rests.filter(q_values)
     context = {'rests': rests, 'form': form}
@@ -226,7 +241,7 @@ def rate_restaurant(request, restaurant_id):
     return render(request, 'base/add_rate.html', context)
 
 def restaurant_sale(request):
-    #TODO: user = request.user
+    user = request.user
     # using "prefetch_related" to optimize the query and reduce database hits
     # the backslash (\) is used for line continuation to enhance readability
     restaurants =  \
@@ -252,12 +267,12 @@ def add_sales(request, restaurant_id):
     if request.method == 'POST':
         form = SaleForm(request.POST)
         if form.is_valid():
-            amount_value = form.cleaned_data['amount']
+            income_value = form.cleaned_data['income']
             date_value = form.cleaned_data['date']
             # Avoid duplicate sales entries: create only if not exists
             new_sale, created = Sale.objects.get_or_create(
                 restaurant=restaurant,
-                amount=amount_value,
+                income=income_value,
                 date=date_value,
             )
             messages.success(request, 'Sale record added successfully!')

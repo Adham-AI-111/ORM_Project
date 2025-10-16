@@ -33,12 +33,12 @@ class RatingForm(forms.ModelForm):
 class SaleForm(forms.ModelForm):
     class Meta:
         model = Sale
-        fields = ['amount', 'date']
+        fields = ['income', 'date']
         widgets = {
-            'amount': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'min': '0.01'}),
+            'income': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'min': '0.01'}),
             'date': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
         }
         help_texts = {
-            'amount': 'Enter the sale amount.',
+            'income': 'Enter the sale amount.',
             'date': 'Enter the date and time of the sale.',
         }

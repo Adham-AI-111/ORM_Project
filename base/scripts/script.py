@@ -4,14 +4,11 @@ from datetime import datetime, timedelta
 import random
 
 def run():
-    user = User.objects.all()[1]
+    # user = User.objects.all()[1]
     # restaurant = Restaurant.objects.first()
     # print(user)
 
-    TYPES_MAP = [('Fast Food', 'FF'), ('Italian', 'IT'), ('Egyption', 'EG'), ('Drinks', 'DR'), ('Arabian', 'AR'), ('Other', 'OT')]
-    label_to_code = dict(TYPES_MAP)
-    print(label_to_code)
-    
+    # Sale.objects.bulk_create()
     # ?=======================
     # restaurant = Restaurant()
     # restaurant.name = "Pizza House"
@@ -33,5 +30,11 @@ def run():
     # sale.amount = 8000
     # sale.date = "2023-10-11"
     # sale.save()
+    # ?=======================
+    # sales= Sale.objects.all()
+
+    # for s in sales:
+    #     s.income = random.uniform(1500, 4500)
+    # Sale.objects.bulk_update(sales, ['income'])
 
     print("Script is running")

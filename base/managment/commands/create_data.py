@@ -14,7 +14,7 @@ class Command(BaseCommand):
         else:
             user = user
 
-        # Create sample restaurants
+        # # Create sample restaurants
         restaurant_types = [choice[0] for choice in Restaurant.RestaurantType.choices]
         for i in range(13):
             restaurant, created = Restaurant.objects.get_or_create(
@@ -28,23 +28,33 @@ class Command(BaseCommand):
             if created:
                 print(f'Created {restaurant.name}')
 
-            # Create sample ratings
-            for j in range(13):
-                rating, created = Rating.objects.get_or_create(
-                    restaurant=restaurant,
-                    user=user,
-                    score=random.randint(1, 5)
-                )
-                if created:
-                    print(f'Created rating {rating.score} for {restaurant.name}')
+        #     # Create sample ratings
+        #     for j in range(13):
+        #         rating, created = Rating.objects.get_or_create(
+        #             restaurant=restaurant,
+        #             user=user,
+        #             score=random.randint(1, 5)
+        #         )
+        #         if created:
+        #             print(f'Created rating {rating.score} for {restaurant.name}')
 
-            # Create sample sales
+        #     # Create sample sales
+        #     for k in range(30):
+        #         sale, created = Sale.objects.get_or_create(
+        #             restaurant=restaurant,
+        #             income=random.uniform(100.0, 3000.0),
+        #             date=datetime.now() - timedelta(days=random.randint(1, 200))
+        #         )
+        #         if created:
+        #             print(f'Created sale of income {sale.income} for {restaurant.name}')
+
+            # Create sample expenditure
             for k in range(30):
                 sale, created = Sale.objects.get_or_create(
                     restaurant=restaurant,
-                    amount=random.uniform(100.0, 3000.0),
+                    expenditure=random.uniform(100.0, 2400.0),
                     date=datetime.now() - timedelta(days=random.randint(1, 200))
                 )
                 if created:
-                    print(f'Created sale of amount {sale.amount} for {restaurant.name}')
+                    print(f'Created expenditure of expenditure {sale.expenditure} for {restaurant.name}')
         
