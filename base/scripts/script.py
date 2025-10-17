@@ -31,10 +31,9 @@ def run():
     # sale.date = "2023-10-11"
     # sale.save()
     # ?=======================
-    # sales= Sale.objects.all()
+    rests= Restaurant.objects.all()
 
-    # for s in sales:
-    #     s.income = random.uniform(1500, 4500)
-    # Sale.objects.bulk_update(sales, ['income'])
+    for s in rests:
+        s.delete()    # Sale.objects.bulk_update(sales, ['income'])
 
     print("Script is running")

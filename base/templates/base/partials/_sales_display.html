@@ -1,9 +1,11 @@
 <div class="sales-display">
     {% if restaurant.sales.all %}
         <div class="d-flex align-items-center gap-2 mb-2">
+            <!-- total sales, total income, total profit -->
             <span class="badge bg-success">Total Sales: {{ restaurant.sales.count }}</span>
-            <span class="badge bg-primary">Total income: ${{ restaurant.sales.total_income_for_rest|default:"0.00" }}</span>
-            <span class="badge bg-primary">Total profit: ${{ restaurant.sales.profit|default:"0.00" }}</span>
+            <span class="badge bg-primary">Total income: ${{ restaurant.total_sales_income|default:"0.00" }}</span>
+            <span class="badge bg-primary">Total profit: ${{ restaurant.total_sales_profit|default:"0.00" }}</span>
+            <span class="badge bg-primary">Total expenditure: ${{ restaurant.total_expenditure|default:"0.00" }}</span>
         </div>
         
         <div class="table-responsive">

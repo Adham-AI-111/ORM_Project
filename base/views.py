@@ -3,8 +3,7 @@ from .models import Restaurant, Rating, Sale
 from .forms import RestaurantCreationForm, RatingForm, SaleForm
 from django.contrib import messages
 # from django.db.models import Sum,  Avg
-from django.db.models import Case, When, Value, CharField, Q
-
+from django.db.models import Case, When, Value, CharField, Q, Avg
 
 
 
@@ -207,6 +206,8 @@ def display_restaurants_to_rate(request):
         When(restaurant_type='OT', then=Value('Other')),
         output_field=CharField()
     )).values('name', 'rest_type_display', 'restaurant_type')
+    # add avg_rates to the rests queryset
+    rests = rests.annotate(avg_rates=Avg('ratings__score'))
 
     # this -->form<-- is just to show the rating form on the same page, without go to another page
     # works by javascript its engine is in the html file and its function is in the rate_restaurant view

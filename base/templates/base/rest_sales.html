@@ -13,6 +13,7 @@
                 <div>
                     <strong>{{ rest.name }}</strong>
                     <span class="badge bg-secondary ms-2">{{ rest.get_restaurant_type_display }}</span>
+                    <span class="badge bg-secondary ms-2">{{ rest.user.username }}</span>
                 </div>
                 <div class="d-flex gap-1">
                     <button class="btn btn-sm btn-outline-info" type="button" data-bs-toggle="collapse" data-bs-target="#sales-{{ rest.id }}" aria-expanded="false" aria-controls="sales-{{ rest.id }}">
