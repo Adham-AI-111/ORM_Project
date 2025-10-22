@@ -6,7 +6,12 @@ class SalesSerializer(serializers.ModelSerializer):
         model = Sale
         fields = ('income', 'expenditure', 'profit_for_single_rest')
 
-class RestaurantSerializer(serializers.ModelSerializer):
+class AllRestaurantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Restaurant
+        fields = ('name', 'restaurant_type', 'avg_rates', 'opened_at')
+
+class CustomRestaurantSerializer(serializers.ModelSerializer):
     sales = SalesSerializer(many=True, read_only=True)
     username = serializers.CharField(source='user.username')
     class Meta:
