@@ -16,7 +16,7 @@ class CustomRestaurantSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username')
     class Meta:
         model = Restaurant
-        fields = ('name', 'username', 'restaurant_type', 'opened_at','avg_rates', 'sales')
+        fields = ('name', 'username', 'restaurant_type', 'opened_at', 'avg_rates', 'sales')
 
 
 class RatingsSerializer(serializers.ModelSerializer):

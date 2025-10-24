@@ -1,0 +1,426 @@
+openapi: 3.0.3
+info:
+  title: My API
+  version: 1.0.0
+  description: Documentation for my API
+paths:
+  /api/all-restaurants/:
+    get:
+      operationId: api_all_restaurants_list
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AllRestaurant'
+          description: ''
+  /api/my-restaurants/:
+    get:
+      operationId: api_my_restaurants_list
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomRestaurant'
+          description: ''
+    post:
+      operationId: api_my_restaurants_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomRestaurant'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CustomRestaurant'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CustomRestaurant'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomRestaurant'
+          description: ''
+  /api/my-restaurants/{rest_id}/:
+    get:
+      operationId: api_my_restaurants_retrieve
+      parameters:
+      - in: path
+        name: rest_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomRestaurant'
+          description: ''
+  /api/ratings/:
+    get:
+      operationId: api_ratings_list
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ratings'
+          description: ''
+  /api/ratings/{rate_id}/:
+    get:
+      operationId: api_ratings_retrieve
+      parameters:
+      - in: path
+        name: rate_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ratings'
+          description: ''
+    put:
+      operationId: api_ratings_update
+      parameters:
+      - in: path
+        name: rate_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ratings'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Ratings'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Ratings'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ratings'
+          description: ''
+    patch:
+      operationId: api_ratings_partial_update
+      parameters:
+      - in: path
+        name: rate_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRatings'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRatings'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRatings'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ratings'
+          description: ''
+    delete:
+      operationId: api_ratings_destroy
+      parameters:
+      - in: path
+        name: rate_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/sales/:
+    get:
+      operationId: api_sales_list
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sales'
+          description: ''
+  /api/token/:
+    post:
+      operationId: api_token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/token/refresh/:
+    post:
+      operationId: api_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+components:
+  schemas:
+    AllRestaurant:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        restaurant_type:
+          $ref: '#/components/schemas/RestaurantTypeEnum'
+        avg_rates:
+          type: string
+          readOnly: true
+        opened_at:
+          type: string
+          format: date
+      required:
+      - avg_rates
+      - name
+      - opened_at
+      - restaurant_type
+    CustomRestaurant:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        username:
+          type: string
+        restaurant_type:
+          $ref: '#/components/schemas/RestaurantTypeEnum'
+        opened_at:
+          type: string
+          format: date
+        avg_rates:
+          type: string
+          readOnly: true
+        sales:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sales'
+          readOnly: true
+      required:
+      - avg_rates
+      - name
+      - opened_at
+      - restaurant_type
+      - sales
+      - username
+    PatchedRatings:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        score:
+          type: integer
+          maximum: 5
+          minimum: 1
+        restaurant:
+          type: integer
+        user:
+          type: integer
+    Ratings:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        score:
+          type: integer
+          maximum: 5
+          minimum: 1
+        restaurant:
+          type: integer
+        user:
+          type: integer
+      required:
+      - id
+      - restaurant
+      - score
+      - user
+    RestaurantTypeEnum:
+      enum:
+      - FF
+      - IT
+      - EG
+      - DR
+      - AR
+      - OT
+      type: string
+      description: |-
+        * `FF` - Fast Food
+        * `IT` - Italian
+        * `EG` - Egyption
+        * `DR` - Drinks
+        * `AR` - Arabian
+        * `OT` - Other
+    Sales:
+      type: object
+      properties:
+        income:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        expenditure:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        profit_for_single_rest:
+          type: string
+          readOnly: true
+      required:
+      - income
+      - profit_for_single_rest
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

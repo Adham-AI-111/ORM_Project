@@ -36,9 +36,9 @@ class SaleForm(forms.ModelForm):
         fields = ['income', 'date']
         widgets = {
             'income': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'min': '0.01'}),
-            'date': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
         help_texts = {
             'income': 'Enter the sale amount.',
-            'date': 'Enter the date and time of the sale.',
+            'date': 'Enter the date of the sale.',
         }

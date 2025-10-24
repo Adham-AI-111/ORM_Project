@@ -19,7 +19,7 @@
                 <tbody>
                     {% for sale in restaurant.sales.all|slice:":10" %}
                     <tr>
-                        <td>{{ sale.date|date:"M d, Y H:i" }}</td>
+                        <td>{{ sale.date|date:"M d, Y" }}</td>
                         <td>${{ sale.income }}</td>
                     </tr>
                     {% endfor %}

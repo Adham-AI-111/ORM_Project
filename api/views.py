@@ -2,7 +2,7 @@ from typing_extensions import Self
 from django.db.models import query
 from django.shortcuts import render
 from . import serialzers
-from rest_framework.generics import ListAPIView, RetrieveAPIView, ListCreateAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
 from base.models import Restaurant, Sale, Rating
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 
@@ -19,7 +19,7 @@ class UserRestaurantListCreateAPIView(ListCreateAPIView):
     def get_permissions(self):
         self.permission_class= [AllowAny]
         if self.request.method == "POST":
-            self.permission_class = [IsAuthenticated]     
+            self.permission_class = [IsAuthenticated]
     
         return super().get_permissions()    
 
@@ -45,6 +45,12 @@ class AllRestaurantListAPIView(ListAPIView):
 class RatingsListApiView(ListAPIView):
     queryset = Rating.objects.all()
     serializer_class = serialzers.RatingsSerializer
+
+
+class RatingsOperationsApiView(RetrieveUpdateDestroyAPIView):
+    queryset = Rating.objects.all()
+    serializer_class = serialzers.RatingsSerializer
+    lookup_url_kwarg = "rate_id"
 
 
 # ---------------Sales Views---------------

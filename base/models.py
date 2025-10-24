@@ -49,13 +49,14 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"{self.restaurant.name} - {self.score} by {self.user.username}"
+        
 
 
 class Sale(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='sales')
     income = models.DecimalField(max_digits=10, decimal_places=2)
     expenditure = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    date = models.DateTimeField()
+    date = models.DateField()
 
     @classmethod
     def total_income_for_single_rest(self):

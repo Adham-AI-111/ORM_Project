@@ -72,12 +72,14 @@ def home(request):
     '''
     TYPES_MAP = [('Fast Food', 'FF'), ('Italian', 'IT'), ('Egyption', 'EG'), ('Drinks', 'DR'), ('Arabian', 'AR'), ('Other', 'OT')]
     label_to_code = dict(TYPES_MAP)
+    # this will apply the type filter every time, combined with the score filter by the if condition, and single also
     if filter_type:
         # using list comperhension and __in instead of looping towice
         chosen_value_type = [label_to_code[t] for t in filter_type if t in label_to_code]
         filters['restaurant_type__in'] = chosen_value_type
 
-    #? !OLD WAY TO: filtering the restaurants based on types that are chosen
+    # ---------------------------------------------
+    #? !OLD WAY TO: filtering the restaurants based on types that are choosen
     # chosen_value_type = []
     # if filter_type: # 2. check if there are values in filter_type 
     #     for label, code in TYPES_MAP: # 1. get the types in DB 
@@ -89,19 +91,19 @@ def home(request):
 
     # ! new filter-------Combined filter logic betwee --rating-- filter and the --type-- filter-------
     # it works now 
+    #  -----------------------------------------
+
+    # check if the score and type filter are chosen together; it is not necessary to check the type every time you check the score
     if filter_rating and filter_type:
-        if filter_rating == "1-3" and filters['restaurant_type']:
+        # Restaurant type filter is already set above, just add rating filter
+        if filter_rating == "1-3":
             filters['ratings__score__lte'] = 3
-            filters['restaurant_type'] = filters['restaurant_type']
-        if filter_rating == "4-5" and filters['restaurant_type']:
+        if filter_rating == "4-5":
             filters['ratings__score__in'] = (5, 4)
-            filters['restaurant_type']=filters['restaurant_type']
-        if filter_rating == ">=3" and filters['restaurant_type']:
+        if filter_rating == ">=3":
             filters['ratings__score__gte'] = 3
-            filters['restaurant_type']=filters['restaurant_type']
-        if filter_rating == "1star" and filters['restaurant_type']:
+        if filter_rating == "1star":
             filters['ratings__score'] = 1
-            filters['restaurant_type']=filters['restaurant_type']
     elif filter_rating and not filter_type:
         if filter_rating == "1-3" :
             filters['ratings__score__lte'] = 3
@@ -195,7 +197,7 @@ def display_restaurants_to_rate(request):
     # i replaced this query to increase the performance while i did not want all the db atb
     # rests = Restaurant.objects.all()
     
-    # using Case,When,then to catch the full type name, because values() cannot get the full name while we use the choice class
+    # using Case,When,then to catch the full type name, because values() cannot get the full name while we use a choice class
     rests = Restaurant.objects.annotate(
     rest_type_display=Case(
         When(restaurant_type='FF', then=Value('Fast Food')),
@@ -205,7 +207,7 @@ def display_restaurants_to_rate(request):
         When(restaurant_type='AR', then=Value('Arabian')),
         When(restaurant_type='OT', then=Value('Other')),
         output_field=CharField()
-    )).values('name', 'rest_type_display', 'restaurant_type')
+    )).values('id', 'name', 'rest_type_display', 'restaurant_type')
     # add avg_rates to the rests queryset
     rests = rests.annotate(avg_rates=Avg('ratings__score'))
 
