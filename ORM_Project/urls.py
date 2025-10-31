@@ -7,7 +7,8 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
     SpectacularRedocView,
 )
-
+from rest_framework.routers import DefaultRouter
+from api.views import RatingsViewSet
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,3 +33,7 @@ urlpatterns = [
     # ReDoc UI
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]+ debug_toolbar_urls()
+
+router = DefaultRouter()
+router.register('rates', RatingsViewSet, basename='rates')
+urlpatterns += router.urls

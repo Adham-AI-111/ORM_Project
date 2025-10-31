@@ -29,11 +29,12 @@ INSTALLED_APPS = [
     'base',
     'api',
     'rest_framework',
-    'rest_framework_simplejwt',
+    'rest_framework_simplejwt',  # jwt
     'django_extensions',
     "debug_toolbar",
     'silk',
     'drf_spectacular',
+    'django_filters',    # API filter
 
 ]
 
@@ -137,9 +138,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # let the app work wiht browser session not only jwt and authentication
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    # add pagination for all API views
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 1,
 }
 
 SPECTACULAR_SETTINGS = {
