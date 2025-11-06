@@ -1,13 +1,25 @@
-from typing_extensions import Self
+from django.contrib.admin import action
 from django.db.models import query
-# from django.shortcuts import render
-from . import serialzers
-from rest_framework.generics import ListAPIView, RetrieveAPIView, ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
-from base.models import Restaurant, Sale, Rating
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
-from .filters import UserRestaurantFilter
-from rest_framework import filters
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.generics import (
+    ListAPIView,
+    ListCreateAPIView,
+    RetrieveAPIView,
+    RetrieveUpdateAPIView,
+    RetrieveUpdateDestroyAPIView,
+)
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.response import Response
+from typing_extensions import Self
+
+from base.models import Rating, Restaurant, Sale
+
+from . import serialzers
+from .filters import RatingsFilter, UserRestaurantFilter
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 # ---------------Restaurant Views---------------
 class UserRestaurantListCreateAPIView(ListCreateAPIView):
@@ -46,12 +58,34 @@ class AllRestaurantListAPIView(ListAPIView):
     serializer_class = serialzers.AllRestaurantSerializer
     permission_classes = [AllowAny]
     # this backend let us search by icontains
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [SearchFilter, OrderingFilter]
     # only exact lookup work here in this filter
     search_fields = ['name']
     ordering_fields = ['name']
 
+
 # ---------------Ratings Views---------------
+
+class RatingsViewSet(viewsets.ModelViewSet):
+    queryset = Rating.objects.all()
+    serializer_class = serialzers.RatingsSerializer
+    pagination_class = None
+    filterset_class = RatingsFilter
+    filter_backends = [OrderingFilter, DjangoFilterBackend]
+    ordering_fields = ["score"]
+    
+    @action(
+    detail=False,
+    methods=['get'],
+    url_path="heigher-rates",
+    # permission_classes=[]
+    )
+    def heigher_rates(self, request):
+        rates = self.get_queryset().filter(score__gte=4)
+        serialzer = self.get_serializer(rates, many=True)
+        return Response(serialzer.data)
+
+
 # class RatingsListApiView(ListAPIView):
 #     queryset = Rating.objects.all()
 #     serializer_class = serialzers.RatingsSerializer
@@ -63,10 +97,6 @@ class AllRestaurantListAPIView(ListAPIView):
 #     lookup_url_kwarg = "rate_id"
 #     permission_classes = [IsAuthenticated]
 
-class RatingsViewSet(viewsets.ModelViewSet):
-    queryset = Rating.objects.all()
-    serializer_class = serialzers.RatingsSerializer
-    pagination_class = None
 
 # ---------------Sales Views---------------
 class SalesListApiView(ListAPIView):

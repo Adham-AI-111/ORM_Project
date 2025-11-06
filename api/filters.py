@@ -1,5 +1,5 @@
 import django_filters
-from base.models import Restaurant
+from base.models import Restaurant, Rating
 
 class UserRestaurantFilter(django_filters.FilterSet):
     class Meta:
@@ -7,4 +7,12 @@ class UserRestaurantFilter(django_filters.FilterSet):
         fields = {
             'name': ['icontains', 'contains'],
             # 'avg_rates': ['gt', 'lt', 'gte', 'lte'],
+        }
+
+
+class RatingsFilter(django_filters.FilterSet):
+    class Meta:
+        model = Rating
+        fields = {
+            "score": ['lt', 'gt', 'range', 'iexact'],
         }

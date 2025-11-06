@@ -35,5 +35,5 @@ urlpatterns = [
 ]+ debug_toolbar_urls()
 
 router = DefaultRouter()
-router.register('rates', RatingsViewSet, basename='rates')
+router.register('api/rates', RatingsViewSet, basename='rates')
 urlpatterns += router.urls
